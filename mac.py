@@ -2,7 +2,7 @@
 
 import asyncio
 import logging
-
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +32,13 @@ def keyboard_tap_callback(proxy, type_, event, refcon):
             if key_state == NSKeyUp:
                 if key_code is 19:
                     logger.info('mac hotkey: play next')
-                    APP.player.play_next()
+                    os.system('echo "next" | nc -4u -w0 localhost 8000')
                 elif key_code is 20:
                     logger.info('mac hotkey: play last')
-                    APP.player.play_last()
+                    os.system('echo "previous" | nc -4u -w0 localhost 8000')
                 elif key_code is 16:
+                    os.system('echo "play_pause" | nc -4u -w0 localhost 8000')
                     logger.info('mac hotkey: play or pause')
-                    APP.player.play_or_pause()
             return None
     return event
 
