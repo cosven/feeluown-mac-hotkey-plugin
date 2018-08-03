@@ -3,7 +3,7 @@ import logging
 import asyncio
 
 __alias__ = 'mac 全局快捷键'
-__version__ = '0.0.1'
+__version__ = '2.0'
 __desc__ = 'mac 全局快捷键'
 
 

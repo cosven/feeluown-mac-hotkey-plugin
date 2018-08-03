@@ -3,10 +3,19 @@
 import asyncio
 import logging
 import os
+import socket
 
 logger = logging.getLogger(__name__)
 
 APP = None
+
+
+def send_cmd(cmd):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(('0.0.0.0', 23333))
+    sock.recv(1024)
+    sock.sendall(bytes(cmd, 'utf-8') + b'\n')
+    sock.close()
 
 
 def keyboard_tap_callback(proxy, type_, event, refcon):
@@ -32,13 +41,13 @@ def keyboard_tap_callback(proxy, type_, event, refcon):
             if key_state == NSKeyUp:
                 if key_code is 19:
                     logger.info('mac hotkey: play next')
-                    os.system('echo "next" | nc -4u -w0 localhost 8000')
+                    send_cmd('next')
                 elif key_code is 20:
                     logger.info('mac hotkey: play last')
-                    os.system('echo "previous" | nc -4u -w0 localhost 8000')
+                    send_cmd('previous')
                 elif key_code is 16:
                     os.system('echo "play_pause" | nc -4u -w0 localhost 8000')
-                    logger.info('mac hotkey: play or pause')
+                    send_cmd('toggle')
             return None
     return event
 
