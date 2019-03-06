@@ -11,10 +11,7 @@ def enable(app):
     logger = logging.getLogger(__name__)
     if sys.platform == 'darwin':
         from .mac import run
-        logger.info('load mac hotkey plugin')
-
-        app_event_loop = asyncio.get_event_loop()
-        app_event_loop.create_task(run(app))
+        run()
 
 
 def disable(app):

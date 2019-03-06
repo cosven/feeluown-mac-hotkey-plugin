@@ -4,10 +4,9 @@ import asyncio
 import logging
 import os
 import socket
+import threading
 
 logger = logging.getLogger(__name__)
-
-APP = None
 
 
 def send_cmd(cmd):
@@ -19,7 +18,6 @@ def send_cmd(cmd):
 
 
 def keyboard_tap_callback(proxy, type_, event, refcon):
-    global APP
     from AppKit import NSKeyUp, NSEvent, NSBundle
     NSBundle.mainBundle().infoDictionary()['NSAppTransportSecurity'] =\
         dict(NSAllowsArbitraryLoads=True)
@@ -83,11 +81,8 @@ def run_event_loop():
     return []
 
 
-@asyncio.coroutine
-def run(app):
-    global APP
-    APP = app
-    loop = asyncio.get_event_loop()
-    future = loop.run_in_executor(None, run_event_loop)
-    yield from future
-    logger.info('mac hotkey loop end')
+def run():
+    t = threading.Thread(target=run_event_loop, name='MacHotkeyThread')
+    t.daemon = True
+    t.start()
+    logger.info('mac hotkey listener started.')
